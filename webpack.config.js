@@ -1,7 +1,5 @@
 const path                  = require('path');
 const webpack               = require('webpack');
-const UglifyJsPlugin        = require('uglifyjs-webpack-plugin');
-const GlobImporter          = require('node-sass-glob-importer');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin     = require('html-webpack-plugin');
 const CleanWebpackPlugin    = require('clean-webpack-plugin');
@@ -27,6 +25,7 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
                 use: [
                     {
                         loader: 'babel-loader',
@@ -65,38 +64,42 @@ module.exports = {
             },
             {
                 test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-                loader: "url-loader",
+                loader: "file-loader",
                 options: {
-                    limit: 10000,
-                    mimetype: 'application/font-woff'
+                    name: '[path][name].[ext]',
+                    emitFile: false
                 }
             }, 
             {
                 test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-                loader: "url-loader",
+                loader: "file-loader",
                 options: {
-                    limit: 10000,
-                    mimetype: 'application/font-woff'
+                    name: '[path][name].[ext]',
+                    emitFile: false
                 }
             }, 
             {
                 test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-                loader: "url-loader",
+                loader: "file-loader",
                 options: {
-                    limit: 10000,
-                    mimetype: 'application/octet-stream'
+                    name: '[path][name].[ext]',
+                    emitFile: false
                 }
             }, 
             {
                 test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-                loader: "file-loader"
+                loader: "file-loader",
+                options: {
+                    name: '[path][name].[ext]',
+                    emitFile: false
+                }
             }, 
             {
                 test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-                loader: "url-loader",
+                loader: "file-loader",
                 options: {
-                    limit: 10000,
-                    mimetype: "image/svg+xml"
+                    name: '[path][name].[ext]',
+                    emitFile: false
                 }
             },
             {
@@ -133,9 +136,14 @@ module.exports = {
         //     template: 'client/src/admin.html',
         //     chunks: []
         // }),
-        new CopyWebpackPlugin([{
+        new CopyWebpackPlugin([
+            {
                 context: 'client/src',
                 from: 'robots.txt'
+            },
+            {
+                context: 'client/src',
+                from: 'sitemap.xml'
             },
             {
                 context: 'client/src',
